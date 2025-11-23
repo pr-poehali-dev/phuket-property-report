@@ -26,12 +26,13 @@ const propertyData = {
 
 const bookingsData = [
   { id: 1, guest: 'Иванов А.', start: '2025-11-01', startTime: '14:00', end: '2025-11-07', endTime: '12:00', days: 7, source: 'Airbnb', status: 'completed' },
-  { id: 2, guest: 'Смирнова М.', start: '2025-11-10', startTime: '15:00', end: '2025-11-15', endTime: '11:00', days: 6, source: 'Booking', status: 'completed' },
-  { id: 3, guest: 'Петров Д.', start: '2025-11-18', startTime: '16:00', end: '2025-11-25', endTime: '10:00', days: 8, source: 'Vrbo', status: 'active' },
-  { id: 4, guest: 'Козлов В.', start: '2025-11-28', startTime: '14:00', end: '2025-12-05', endTime: '12:00', days: 8, source: 'Agoda', status: 'upcoming' },
-  { id: 5, guest: 'Морозова Е.', start: '2025-12-08', startTime: '13:00', end: '2025-12-14', endTime: '11:00', days: 7, source: 'Expedia', status: 'upcoming' },
-  { id: 6, guest: 'Кузнецов П.', start: '2025-12-16', startTime: '15:00', end: '2025-12-22', endTime: '12:00', days: 7, source: 'Airbnb', status: 'upcoming' },
-  { id: 7, guest: 'Лебедева О.', start: '2025-12-24', startTime: '14:00', end: '2025-12-30', endTime: '10:00', days: 7, source: 'Booking', status: 'upcoming' },
+  { id: 2, guest: 'Смирнова М.', start: '2025-11-08', startTime: '15:00', end: '2025-11-13', endTime: '11:00', days: 6, source: 'Booking', status: 'completed' },
+  { id: 3, guest: 'Петров Д.', start: '2025-11-14', startTime: '16:00', end: '2025-11-20', endTime: '10:00', days: 7, source: 'Vrbo', status: 'active' },
+  { id: 4, guest: 'Козлов В.', start: '2025-11-21', startTime: '14:00', end: '2025-11-27', endTime: '12:00', days: 7, source: 'Agoda', status: 'upcoming' },
+  { id: 5, guest: 'Морозова Е.', start: '2025-12-01', startTime: '13:00', end: '2025-12-07', endTime: '11:00', days: 7, source: 'Expedia', status: 'upcoming' },
+  { id: 6, guest: 'Кузнецов П.', start: '2025-12-08', startTime: '15:00', end: '2025-12-14', endTime: '12:00', days: 7, source: 'KOYA', status: 'upcoming' },
+  { id: 7, guest: 'Лебедева О.', start: '2025-12-15', startTime: '14:00', end: '2025-12-21', endTime: '10:00', days: 7, source: 'Airbnb', status: 'upcoming' },
+  { id: 8, guest: 'Соколов И.', start: '2025-12-22', startTime: '16:00', end: '2025-12-28', endTime: '11:00', days: 7, source: 'Booking', status: 'upcoming' },
 ];
 
 const sourceColors: Record<string, { bg: string; border: string; text: string }> = {
@@ -40,6 +41,7 @@ const sourceColors: Record<string, { bg: string; border: string; text: string }>
   Vrbo: { bg: 'bg-[#0D7EA3]', border: 'border-[#0D7EA3]', text: 'text-[#0D7EA3]' },
   Agoda: { bg: 'bg-[#D71149]', border: 'border-[#D71149]', text: 'text-[#D71149]' },
   Expedia: { bg: 'bg-[#FFCB00]', border: 'border-[#FFCB00]', text: 'text-[#FFCB00]' },
+  KOYA: { bg: 'bg-[#7C3AED]', border: 'border-[#7C3AED]', text: 'text-[#7C3AED]' },
 };
 
 const accessLogs = [
