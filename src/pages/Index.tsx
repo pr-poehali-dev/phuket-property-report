@@ -25,12 +25,22 @@ const propertyData = {
 };
 
 const bookingsData = [
-  { id: 1, guest: 'Иванов А.', start: '2025-11-01', end: '2025-11-07', days: 7, source: 'Airbnb', status: 'completed' },
-  { id: 2, guest: 'Смирнова М.', start: '2025-11-10', end: '2025-11-15', days: 6, source: 'Booking', status: 'completed' },
-  { id: 3, guest: 'Петров Д.', start: '2025-11-18', end: '2025-11-25', days: 8, source: 'Airbnb', status: 'active' },
-  { id: 4, guest: 'Козлов В.', start: '2025-11-28', end: '2025-12-05', days: 8, source: 'Booking', status: 'upcoming' },
-  { id: 5, guest: 'Морозова Е.', start: '2025-12-08', end: '2025-12-14', days: 7, source: 'Airbnb', status: 'upcoming' },
+  { id: 1, guest: 'Иванов А.', start: '2025-11-01', startTime: '14:00', end: '2025-11-07', endTime: '12:00', days: 7, source: 'Airbnb', status: 'completed' },
+  { id: 2, guest: 'Смирнова М.', start: '2025-11-10', startTime: '15:00', end: '2025-11-15', endTime: '11:00', days: 6, source: 'Booking', status: 'completed' },
+  { id: 3, guest: 'Петров Д.', start: '2025-11-18', startTime: '16:00', end: '2025-11-25', endTime: '10:00', days: 8, source: 'Vrbo', status: 'active' },
+  { id: 4, guest: 'Козлов В.', start: '2025-11-28', startTime: '14:00', end: '2025-12-05', endTime: '12:00', days: 8, source: 'Agoda', status: 'upcoming' },
+  { id: 5, guest: 'Морозова Е.', start: '2025-12-08', startTime: '13:00', end: '2025-12-14', endTime: '11:00', days: 7, source: 'Expedia', status: 'upcoming' },
+  { id: 6, guest: 'Кузнецов П.', start: '2025-12-16', startTime: '15:00', end: '2025-12-22', endTime: '12:00', days: 7, source: 'Airbnb', status: 'upcoming' },
+  { id: 7, guest: 'Лебедева О.', start: '2025-12-24', startTime: '14:00', end: '2025-12-30', endTime: '10:00', days: 7, source: 'Booking', status: 'upcoming' },
 ];
+
+const sourceColors: Record<string, { bg: string; border: string; text: string }> = {
+  Airbnb: { bg: 'bg-[#FF5A5F]', border: 'border-[#FF5A5F]', text: 'text-[#FF5A5F]' },
+  Booking: { bg: 'bg-[#003580]', border: 'border-[#003580]', text: 'text-[#003580]' },
+  Vrbo: { bg: 'bg-[#0D7EA3]', border: 'border-[#0D7EA3]', text: 'text-[#0D7EA3]' },
+  Agoda: { bg: 'bg-[#D71149]', border: 'border-[#D71149]', text: 'text-[#D71149]' },
+  Expedia: { bg: 'bg-[#FFCB00]', border: 'border-[#FFCB00]', text: 'text-[#FFCB00]' },
+};
 
 const accessLogs = [
   { id: 1, date: '2025-11-23 14:30', type: 'Гость', name: 'Петров Д.', action: 'Вход', door: 'Главная дверь' },
@@ -185,87 +195,104 @@ const Index = () => {
             <Card>
               <CardHeader>
                 <CardTitle>Диаграмма бронирований</CardTitle>
-                <CardDescription>График заездов гостей по датам и источникам</CardDescription>
+                <CardDescription>График заездов гостей в стиле Gantt-chart</CardDescription>
               </CardHeader>
               <CardContent>
-                <div className="space-y-4">
-                  <div className="flex gap-4 mb-6">
-                    <div className="flex items-center gap-2">
-                      <div className="w-4 h-4 rounded bg-primary"></div>
-                      <span className="text-sm">Airbnb</span>
+                <div className="mb-6 flex flex-wrap gap-3">
+                  {Object.entries(sourceColors).map(([source, colors]) => (
+                    <div key={source} className="flex items-center gap-2">
+                      <div className={`w-3 h-3 rounded ${colors.bg}`}></div>
+                      <span className="text-sm">{source}</span>
                     </div>
-                    <div className="flex items-center gap-2">
-                      <div className="w-4 h-4 rounded bg-secondary"></div>
-                      <span className="text-sm">Booking</span>
+                  ))}
+                </div>
+
+                <div className="overflow-x-auto">
+                  <div className="min-w-[800px]">
+                    <div className="grid grid-cols-[200px_1fr] gap-4 mb-2">
+                      <div className="font-semibold text-sm text-muted-foreground">Гость / Источник</div>
+                      <div className="grid grid-cols-30 gap-px">
+                        {Array.from({ length: 30 }, (_, i) => (
+                          <div
+                            key={i}
+                            className="text-center text-xs text-muted-foreground"
+                          >
+                            {i + 1}
+                          </div>
+                        ))}
+                      </div>
                     </div>
-                  </div>
 
-                  {bookingsData.map((booking) => {
-                    const startDate = new Date(booking.start);
-                    const endDate = new Date(booking.end);
-                    const dayOfMonth = startDate.getDate();
-                    const leftPosition = ((dayOfMonth - 1) / 30) * 100;
-                    const width = (booking.days / 30) * 100;
+                    <div className="space-y-3">
+                      {bookingsData.map((booking) => {
+                        const startDate = new Date(booking.start);
+                        const endDate = new Date(booking.end);
+                        const startDay = startDate.getDate();
+                        const colors = sourceColors[booking.source];
 
-                    return (
-                      <div key={booking.id} className="relative h-16 border rounded-lg p-3 bg-white hover:shadow-md transition-shadow">
-                        <div className="flex justify-between items-start mb-2">
-                          <div>
-                            <span className="font-medium text-sm">{booking.guest}</span>
-                            <div className="flex items-center gap-2 mt-1">
+                        return (
+                          <div key={booking.id} className="grid grid-cols-[200px_1fr] gap-4 items-center">
+                            <div className="flex flex-col">
+                              <span className="font-medium text-sm">{booking.guest}</span>
                               <Badge
-                                variant={booking.source === 'Airbnb' ? 'default' : 'secondary'}
-                                className="text-xs"
+                                className={`w-fit text-xs mt-1 ${colors.bg} ${colors.border} border text-white`}
                               >
                                 {booking.source}
                               </Badge>
-                              <span className="text-xs text-muted-foreground">
-                                {booking.days} {booking.days === 1 ? 'день' : booking.days < 5 ? 'дня' : 'дней'}
-                              </span>
+                            </div>
+
+                            <div className="relative h-12 bg-gray-50 rounded border">
+                              <div className="absolute inset-0 grid grid-cols-30 gap-px">
+                                {Array.from({ length: 30 }, (_, i) => (
+                                  <div key={i} className="border-r border-gray-200"></div>
+                                ))}
+                              </div>
+
+                              <div
+                                className={`absolute h-full ${colors.bg} rounded flex items-center justify-between px-2 text-white text-xs font-medium shadow-md hover:shadow-lg transition-shadow`}
+                                style={{
+                                  left: `${((startDay - 1) / 30) * 100}%`,
+                                  width: `${(booking.days / 30) * 100}%`,
+                                }}
+                              >
+                                <span className="bg-white/20 px-1.5 py-0.5 rounded backdrop-blur-sm">
+                                  {booking.startTime}
+                                </span>
+                                <span className="bg-white/20 px-1.5 py-0.5 rounded backdrop-blur-sm">
+                                  {booking.endTime}
+                                </span>
+                              </div>
                             </div>
                           </div>
-                          <span className="text-xs text-muted-foreground">
-                            {startDate.toLocaleDateString('ru-RU', { day: '2-digit', month: 'short' })} -{' '}
-                            {endDate.toLocaleDateString('ru-RU', { day: '2-digit', month: 'short' })}
-                          </span>
-                        </div>
-                        <div className="relative h-2 bg-muted rounded-full overflow-hidden">
-                          <div
-                            className={`absolute h-full rounded-full ${
-                              booking.source === 'Airbnb' ? 'bg-primary' : 'bg-secondary'
-                            }`}
-                            style={{
-                              left: `${leftPosition}%`,
-                              width: `${width}%`,
-                            }}
-                          ></div>
-                        </div>
-                      </div>
-                    );
-                  })}
+                        );
+                      })}
+                </div>
                 </div>
 
                 <div className="mt-8">
                   <h4 className="font-semibold mb-4">Статистика по источникам</h4>
-                  <div className="grid grid-cols-2 gap-4">
-                    <Card>
-                      <CardContent className="pt-6">
-                        <div className="text-center">
-                          <Icon name="Plane" size={24} className="mx-auto mb-2 text-primary" />
-                          <div className="text-2xl font-bold text-primary">3</div>
-                          <div className="text-sm text-muted-foreground">Airbnb</div>
-                        </div>
-                      </CardContent>
-                    </Card>
-                    <Card>
-                      <CardContent className="pt-6">
-                        <div className="text-center">
-                          <Icon name="Hotel" size={24} className="mx-auto mb-2 text-secondary-foreground" />
-                          <div className="text-2xl font-bold text-secondary-foreground">2</div>
-                          <div className="text-sm text-muted-foreground">Booking</div>
-                        </div>
-                      </CardContent>
-                    </Card>
+                  <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
+                    {Object.entries(
+                      bookingsData.reduce((acc, booking) => {
+                        acc[booking.source] = (acc[booking.source] || 0) + 1;
+                        return acc;
+                      }, {} as Record<string, number>)
+                    ).map(([source, count]) => {
+                      const colors = sourceColors[source];
+                      return (
+                        <Card key={source} className="hover:shadow-md transition-shadow">
+                          <CardContent className="pt-6">
+                            <div className="text-center">
+                              <div className={`w-12 h-12 rounded-full ${colors.bg} mx-auto mb-3 flex items-center justify-center`}>
+                                <Icon name="Calendar" size={24} className="text-white" />
+                              </div>
+                              <div className={`text-3xl font-bold ${colors.text}`}>{count}</div>
+                              <div className="text-sm text-muted-foreground mt-1">{source}</div>
+                            </div>
+                          </CardContent>
+                        </Card>
+                      );
+                    })}
                   </div>
                 </div>
               </CardContent>
