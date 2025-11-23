@@ -266,7 +266,7 @@ const Index = () => {
                           </div>
                         );
                       })}
-                </div>
+                    </div>
                 </div>
 
                 <div className="mt-8">
